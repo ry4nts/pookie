@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy 23rd Birthday Pookie! 💖</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #fdf2f8; /* Pink-50 */
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        h1, h2, .cursive-text {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        #fireworks-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 192, 203, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(255, 105, 180, 0.2);
+        }
+
+        /* Slider Animations */
+        .slide {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .slide.active {
+            opacity: 1;
+            position: relative;
+        }
+
+        /* Fade in animation */
+        .fade-in {
+            animation: fadeIn 1.5s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Heart beat animation */
+        .heart-beat {
+            animation: heartbeat 1.5s infinite;
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            20% { transform: scale(1.1); }
+            40% { transform: scale(1); }
+            60% { transform: scale(1.1); }
+            80% { transform: scale(1); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <canvas id="fireworks-canvas"></canvas>
+
+    <!-- Start Screen (Required to bypass browser autoplay restrictions with sound) -->
+    <div id="start-screen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-pink-100 transition-opacity duration-1000">
+        <div class="text-center p-8 glass-panel rounded-3xl max-w-sm mx-4">
+            <h1 class="text-4xl text-pink-600 mb-6 font-bold">Hai Pookie... 💕</h1>
+            <p class="mb-8 text-pink-500">Ada sesuatu buat kamu nih!</p>
+            <button id="start-btn" class="bg-pink-500 hover:bg-pink-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105 heart-beat">
+                Buka Kado 🎁
+            </button>
+        </div>
+    </div>
+
+    <!-- Video Popup Modal -->
+    <div id="video-popup" class="fixed inset-0 z-40 hidden flex items-center justify-center bg-black/80 backdrop-blur-sm transition-opacity duration-500 opacity-0">
+        <div class="relative w-full max-w-[90%] max-h-[80%] rounded-2xl overflow-hidden shadow-2xl border-4 border-pink-400 flex items-center justify-center bg-black">
+            <!-- Ganti src="video.mp4" dengan file video Anda -->
+            <video id="birthday-video" class="w-full max-h-[85vh] object-contain" playsinline>
+                <source src="video.mp4" type="video/mp4">
+                Maaf, browser kamu tidak mendukung pemutaran video.
+            </video>
+            <button id="skip-btn" class="absolute top-4 right-4 z-10 bg-white/30 hover:bg-white/50 text-white rounded-full p-2 text-sm backdrop-blur-md">
+                Lewati
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content (Hidden initially) -->
+    <div id="main-content" class="relative z-10 hidden flex-col items-center justify-center min-h-screen p-4 py-12">
+        
+        <div class="max-w-2xl w-full glass-panel rounded-3xl p-8 md:p-12 text-center mt-8">
+            <h1 class="text-5xl md:text-6xl text-pink-600 mb-4 drop-shadow-sm">Happy 23rd Birthday!</h1>
+            <h2 class="text-4xl text-pink-500 mb-8 font-bold">Kesayanganku, Pookie 💖</h2>
+            
+            <div class="space-y-4 text-lg md:text-xl text-gray-700 leading-relaxed mb-12">
+                <p>
+                    Selamat ulang tahun yang ke-23, sayang! 🎉✨
+                </p>
+                <p>
+                    Di umur kamu yang baru ini, aku berdoa semoga kamu selalu diberikan kesehatan, kebahagiaan yang berlimpah, dan kelancaran dalam setiap hal yang kamu kerjakan. Semoga kamu semakin dewasa, semakin sukses, dan semua yang kamu cita-citakan bisa tercapai satu per satu.
+                </p>
+                <p>
+                    Terima kasih ya sudah jadi bagian terindah dalam hidupku. Terima kasih untuk semua tawa, cerita, dan kasih sayang yang kamu kasih. Harapanku cuma satu, semoga kita bisa terus sama-sama, saling dukung, dan bikin lebih banyak kenangan indah ke depannya.
+                </p>
+                <p class="font-semibold text-pink-500 text-2xl cursive-text mt-6">
+                    I love you so much, Pookie! 💕
+                </p>
+            </div>
+
+            <!-- Photo Slider -->
+            <div class="relative w-full max-w-md mx-auto aspect-[4/5] rounded-2xl overflow-hidden border-4 border-white shadow-xl bg-pink-50">
+                <!-- Fallback to placehold.co so it doesn't look broken if local files are missing -->
+                <img src="foto/foto (1).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+1](https://placehold.co/400x500/ffb6c1/fff?text=Foto+1)'" class="slide active" alt="Foto Pookie 1">
+                <img src="foto/foto (2).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+2](https://placehold.co/400x500/ffb6c1/fff?text=Foto+2)'" class="slide" alt="Foto Pookie 2">
+                <img src="foto/foto (3).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+3](https://placehold.co/400x500/ffb6c1/fff?text=Foto+3)'" class="slide" alt="Foto Pookie 3">
+                <img src="foto/foto (4).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+4](https://placehold.co/400x500/ffb6c1/fff?text=Foto+4)'" class="slide" alt="Foto Pookie 4">
+                <img src="foto/foto (5).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+5](https://placehold.co/400x500/ffb6c1/fff?text=Foto+5)'" class="slide" alt="Foto Pookie 5">
+                <img src="foto/foto (6).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+6](https://placehold.co/400x500/ffb6c1/fff?text=Foto+6)'" class="slide" alt="Foto Pookie 6">
+                <img src="foto/foto (7).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+7](https://placehold.co/400x500/ffb6c1/fff?text=Foto+7)'" class="slide" alt="Foto Pookie 7">
+                <img src="foto/foto (8).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+8](https://placehold.co/400x500/ffb6c1/fff?text=Foto+8)'" class="slide" alt="Foto Pookie 8">
+                <img src="foto/foto (9).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+9](https://placehold.co/400x500/ffb6c1/fff?text=Foto+9)'" class="slide" alt="Foto Pookie 9">
+                <img src="foto/foto (10).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+10](https://placehold.co/400x500/ffb6c1/fff?text=Foto+10)'" class="slide" alt="Foto Pookie 10">
+                <img src="foto/foto (11).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+11](https://placehold.co/400x500/ffb6c1/fff?text=Foto+11)'" class="slide" alt="Foto Pookie 11">
+                <img src="foto/foto (12).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+12](https://placehold.co/400x500/ffb6c1/fff?text=Foto+12)'" class="slide" alt="Foto Pookie 12">
+                <img src="foto/foto (13).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+13](https://placehold.co/400x500/ffb6c1/fff?text=Foto+13)'" class="slide" alt="Foto Pookie 13">
+                <img src="foto/foto (14).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+14](https://placehold.co/400x500/ffb6c1/fff?text=Foto+14)'" class="slide" alt="Foto Pookie 14">
+                <img src="foto/foto (15).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+15](https://placehold.co/400x500/ffb6c1/fff?text=Foto+15)'" class="slide" alt="Foto Pookie 15">
+                <img src="foto/foto (16).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+16](https://placehold.co/400x500/ffb6c1/fff?text=Foto+16)'" class="slide" alt="Foto Pookie 16">
+                <img src="foto/foto (17).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+17](https://placehold.co/400x500/ffb6c1/fff?text=Foto+17)'" class="slide" alt="Foto Pookie 17">
+                <img src="foto/foto (18).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+18](https://placehold.co/400x500/ffb6c1/fff?text=Foto+18)'" class="slide" alt="Foto Pookie 18">
+                <img src="foto/foto (19).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+19](https://placehold.co/400x500/ffb6c1/fff?text=Foto+19)'" class="slide" alt="Foto Pookie 19">
+                <img src="foto/foto (20).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+20](https://placehold.co/400x500/ffb6c1/fff?text=Foto+20)'" class="slide" alt="Foto Pookie 20">
+                <img src="foto/foto (21).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+21](https://placehold.co/400x500/ffb6c1/fff?text=Foto+21)'" class="slide" alt="Foto Pookie 21">
+                <img src="foto/foto (22).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+22](https://placehold.co/400x500/ffb6c1/fff?text=Foto+22)'" class="slide" alt="Foto Pookie 22">
+                <img src="foto/foto (23).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+23](https://placehold.co/400x500/ffb6c1/fff?text=Foto+23)'" class="slide" alt="Foto Pookie 23">
+                <img src="foto/foto (24).jpg" onerror="this.src='[https://placehold.co/400x500/ffb6c1/fff?text=Foto+24](https://placehold.co/400x500/ffb6c1/fff?text=Foto+24)'" class="slide" alt="Foto Pookie 24">                
+                <!-- Slider Controls -->
+                <button onclick="changeSlide(-1)" class="absolute top-1/2 left-2 -translate-y-1/2 bg-white/50 hover:bg-white text-pink-500 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur shadow-md transition font-bold text-xl">&#10094;</button>
+                <button onclick="changeSlide(1)" class="absolute top-1/2 right-2 -translate-y-1/2 bg-white/50 hover:bg-white text-pink-500 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur shadow-md transition font-bold text-xl">&#10095;</button>
+            </div>
+            
+            <p class="mt-4 text-sm text-pink-400 italic">Our beautiful moments ✨</p>
+
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const startScreen = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const videoPopup = document.getElementById('video-popup');
+        const video = document.getElementById('birthday-video');
+        const skipBtn = document.getElementById('skip-btn');
+        const mainContent = document.getElementById('main-content');
+        const canvas = document.getElementById('fireworks-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Logic UI Flow
+        startBtn.addEventListener('click', () => {
+            // Hide start screen
+            startScreen.style.opacity = '0';
+            setTimeout(() => {
+                startScreen.style.display = 'none';
+                // Show video popup
+                videoPopup.classList.remove('hidden');
+                setTimeout(() => {
+                    videoPopup.style.opacity = '1';
+                    video.play().catch(e => console.log("Auto-play prevented", e));
+                }, 50);
+            }, 500);
+        });
+
+        function endVideoAndShowMain() {
+            video.pause();
+            videoPopup.style.opacity = '0';
+            setTimeout(() => {
+                videoPopup.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                mainContent.classList.add('fade-in');
+                startFireworks();
+            }, 500);
+        }
+
+        video.addEventListener('ended', endVideoAndShowMain);
+        skipBtn.addEventListener('click', endVideoAndShowMain);
+
+        // Slider Logic
+        let slideIndex = 0;
+        const slides = document.querySelectorAll('.slide');
+        let sliderInterval;
+
+        function showSlides(n) {
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            slideIndex = n;
+            if (slideIndex >= slides.length) slideIndex = 0;
+            if (slideIndex < 0) slideIndex = slides.length - 1;
+            slides[slideIndex].classList.add('active');
+        }
+
+        function changeSlide(n) {
+            clearInterval(sliderInterval);
+            showSlides(slideIndex + n);
+            startAutoSlide();
+        }
+
+        function startAutoSlide() {
+            sliderInterval = setInterval(() => {
+                showSlides(slideIndex + 1);
+            }, 3500); // Ganti foto otomatis setiap 3.5 detik
+        }
+        
+        startAutoSlide(); // Init slider
+
+        // Fireworks Animation Logic
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        let fireworks = [];
+        let particles = [];
+
+        class Firework {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height;
+                this.sx = Math.random() * 3 - 1.5;
+                this.sy = Math.random() * -3 - 4 - (canvas.height * 0.005);
+                this.size = 2;
+                this.color = `hsl(${Math.random() * 60 + 300}, 100%, 60%)`; // Pink/Purple hues
+                this.shouldExplode = false;
+            }
+            update() {
+                this.x += this.sx;
+                this.y += this.sy;
+                this.sy += 0.05; // gravity
+                if (this.sy >= 0 || Math.random() < 0.01) {
+                    this.shouldExplode = true;
+                    explode(this.x, this.y, this.color);
+                }
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.sx = Math.random() * 6 - 3;
+                this.sy = Math.random() * 6 - 3;
+                this.size = Math.random() * 2 + 1;
+                this.color = color;
+                this.life = 100;
+            }
+            update() {
+                this.x += this.sx;
+                this.y += this.sy;
+                this.sy += 0.05; // gravity
+                this.life--;
+                this.size *= 0.95;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.life / 100;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function explode(x, y, color) {
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        let isAnimating = false;
+        function animateFireworks() {
+            if(!isAnimating) return;
+            ctx.fillStyle = 'rgba(253, 242, 248, 0.2)'; // Pink-50 with trail effect
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (Math.random() < 0.05) {
+                fireworks.push(new Firework());
+            }
+
+            for (let i = fireworks.length - 1; i >= 0; i--) {
+                fireworks[i].update();
+                fireworks[i].draw();
+                if (fireworks[i].shouldExplode) {
+                    fireworks.splice(i, 1);
+                }
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                particles[i].draw();
+                if (particles[i].life <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+            requestAnimationFrame(animateFireworks);
+        }
+
+        function startFireworks() {
+            isAnimating = true;
+            animateFireworks();
+        }
+    </script>
+</body>
+</html>
